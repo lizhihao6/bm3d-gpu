@@ -5,20 +5,20 @@ BM3D Pytorch Version
 
 Has been tested in pytorch=1.10.1, python=3.8, CUDA=11.1
 
-# Install
+## Install
 
 ```bash
 export CUDA_HOME=/usr/local/cuda #use your CUDA instead
 sh install.sh
 ```
 
-# Test
+## Test
 
 ```bash
 python test/test.py
 ```
 
-# Usage
+## Usage
 
 ```python
 import cv2
@@ -53,7 +53,7 @@ if __name__ == '__main__':
     print("PSNR: {:.2f}".format(psnr.item()))
 ```
 
-# Thanks
+## Thanks
 Most of the code is based on the implementation of David Honzátko <david.honzatko@epfl.ch> in [bm3d-gpu](https://github.com/DawyD/bm3d-gpu)
 
 If you find this implementation useful please cite the following paper in your work:
