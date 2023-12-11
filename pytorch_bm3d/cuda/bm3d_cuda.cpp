@@ -7,8 +7,8 @@
 
 // CUDA forward declarations
 
-torch::Tensor bm3d_cuda_forward(torch::Tensor input, BM3D& bm3d, uint& variance,
-                                bool twostep) {
+torch::Tensor bm3d_cuda_forward(torch::Tensor input, BM3D& bm3d,
+                                float& variance, bool twostep) {
   // Allocate images
   auto output = torch::zeros_like(input);
 
@@ -39,7 +39,7 @@ torch::Tensor bm3d_cuda_forward(torch::Tensor input, BM3D& bm3d, uint& variance,
   CHECK_CUDA(x);       \
   CHECK_CONTIGUOUS(x)
 
-torch::Tensor bm3d_forward(torch::Tensor input, uint& variance, bool twostep) {
+torch::Tensor bm3d_forward(torch::Tensor input, float& variance, bool twostep) {
   CHECK_INPUT(input);
 
   BM3D bm3d;

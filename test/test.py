@@ -18,7 +18,7 @@ if __name__ == '__main__':
     variance = 20 * 20
 
     lq, gt = lq * scale, gt * scale
-    variance = variance * (scale ** 2)    
+    variance = variance * (scale ** 2) + 0.0001
 
     bm3d = BM3D(two_step=True)
 

@@ -50,7 +50,7 @@ extern "C" void run_DCT2D8x8(float* d_transformed_stacks,
 extern "C" void run_hard_treshold_block(
     const uint2 start_point, float* patch_stack, float* w_P,
     const uint* __restrict num_patches_in_stack, const uint2 stacks_dim,
-    const Params params, const uint sigma, const dim3 num_threads,
+    const Params params, const float sigma, const dim3 num_threads,
     const dim3 num_blocks, const uint shared_memory_size);
 
 extern "C" void run_IDCT2D8x8(float* d_gathered_stacks,
@@ -77,7 +77,7 @@ extern "C" void run_wiener_filtering(
     const uint2 start_point, float* patch_stack,
     const float* __restrict patch_stack_basic, float* w_P,
     const uint* __restrict num_patches_in_stack, uint2 stacks_dim,
-    const Params params, const uint sigma, const dim3 num_threads,
+    const Params params, const float sigma, const dim3 num_threads,
     const dim3 num_blocks, const uint shared_memory_size);
 
 // Cuda error handling
@@ -283,7 +283,7 @@ class BM3D {
   arrays.
   */
   void first_step(std::vector<raw_int*>& denoised_image, int width, int height,
-                  int channels, uint* sigma) {
+                  int channels, float* sigma) {
     // image dimensions
     const uint2 image_dim = make_uint2(width, height);
 
@@ -511,7 +511,7 @@ class BM3D {
   }
 
   void second_step(std::vector<raw_int*>& denoised_image, int width, int height,
-                   int channels, uint* sigma) {
+                   int channels, float* sigma) {
     // Image dimensions
     const uint2 image_dim = make_uint2(width, height);
 
@@ -880,7 +880,7 @@ class BM3D {
   component and each following width*height pixels represent color components
   */
   void denoise_host_image(raw_int* src_image, raw_int* dst_image, int width,
-                          int height, int channels, uint* sigma,
+                          int height, int channels, float* sigma,
                           bool two_step) {
     Stopwatch total;
     total.start();

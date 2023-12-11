@@ -163,7 +163,7 @@ __global__ void hard_treshold_block(
                                                     // 3D groups
     uint2 stacks_dim,  // IN: dimensions limiting addresses of reference patches
     const Params params,  // IN: denoising parameters
-    const uint sigma      // IN: noise variance
+    const float sigma     // IN: noise variance
 ) {
   extern __shared__ float data[];
 
@@ -321,7 +321,7 @@ __global__ void wiener_filtering(
                                                     // 3D groups
     uint2 stacks_dim,  // IN: dimensions limiting addresses of reference patches
     const Params params,  // IN: denoising parameters
-    const uint sigma      // IN: Noise variance
+    const float sigma     // IN: Noise variance
 ) {
   extern __shared__ float data[];
 
@@ -410,7 +410,7 @@ extern "C" void run_get_block(const uint2 start_point,
 extern "C" void run_hard_treshold_block(
     const uint2 start_point, float* patch_stack, float* w_P,
     const uint* __restrict num_patches_in_stack, const uint2 stacks_dim,
-    const Params params, const uint sigma, const dim3 num_threads,
+    const Params params, const float sigma, const dim3 num_threads,
     const dim3 num_blocks, const uint shared_memory_size) {
   hard_treshold_block<<<num_blocks, num_threads, shared_memory_size>>>(
       start_point, patch_stack, w_P, num_patches_in_stack, stacks_dim, params,
@@ -443,7 +443,7 @@ extern "C" void run_wiener_filtering(
     const uint2 start_point, float* patch_stack,
     const float* __restrict patch_stack_basic, float* w_P,
     const uint* __restrict num_patches_in_stack, uint2 stacks_dim,
-    const Params params, const uint sigma, const dim3 num_threads,
+    const Params params, const float sigma, const dim3 num_threads,
     const dim3 num_blocks, const uint shared_memory_size) {
   wiener_filtering<<<num_blocks, num_threads, shared_memory_size>>>(
       start_point, patch_stack, patch_stack_basic, w_P, num_patches_in_stack,
