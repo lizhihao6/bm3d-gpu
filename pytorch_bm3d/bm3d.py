@@ -21,6 +21,8 @@ class bm3d_function(Function):
         
         assert im.dtype == torch.int, "BM3D forward input must be int tensor"
 
+        assert im.min() >= 0, "Input should be larger than zero"
+
         output = torch.zeros_like(im)
         for c in range(im.shape[1]):
             output[0, c, :, :] = bm3d_cuda.forward(im[0, c, :, :], variance, two_step)
