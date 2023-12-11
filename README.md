@@ -1,64 +1,61 @@
-BM3D-GPU
+BM3D Pytorch Version
 ========
 
-CUDA-accelerated implementation of BM3D image denoising method
+🌟 We support RAW image denoising with multi-channel and int type! 🌟
 
-Author    : David Honzátko <david.honzatko@epfl.ch>
+Has been tested in pytorch=1.10.1, python=3.8, CUDA=11.1
 
-# Unix/Linux User Guide
+# Install
 
-The code is compilable on Unix/Linux. 
+```bash
+export CUDA_HOME=/usr/local/cuda #use your CUDA instead
+sh install.sh
+```
 
-- Compilation. 
-Automated compilation requires the cmake program.
+# Test
 
-- Libraries. 
-This code requires the CUDA toolkit installed.
+```bash
+python test/test.py
+```
 
-- Image format. 
-All the image formats supported by the Cimg library.
-For users that have convert or gm installed, it supports most of the image formats. Otherwise we recommend to use the .bmp format.
+# Usage
 
+```python
+import cv2
+import torch
+import numpy as np
 
-Usage:
+from pytorch_bm3d import BM3D
 
-1. Download the code package and extract it. Go to that directory. 
+scale = 2**6 - 1 
+channels = 4
 
-2. Create build directory, create the makefiles using cmake and compile the application
-Run 
-```
-mkdir build
-cd build
-cmake ..
-make
-```
-3. Run CUDA-accelerated BM3D image denoising application
-```
-./bm3d
-```
-The generic way to run the code is:
-```
-./bm3d NoisyImage.png DenoisedImage.png sigma [color [twostep [quiet [ReferenceImage]]]]
-```
-Options:
-- color - color image denoising (experimental only)
-- twostep - process both steps of the BM3D method
-- quiet - no information about the state of processing is displayed
-- ReferenceImage - if provided, computes and prints PSNR between the ReferenceImage and DenoisedImage
+if __name__ == '__main__':
+    lq = cv2.imread('test/lena_20.png', cv2.IMREAD_UNCHANGED)[..., ::-1]    
+    gt = cv2.imread('test/lena.png', cv2.IMREAD_UNCHANGED)[..., ::-1]
+    lq, gt = np.ascontiguousarray(lq), np.ascontiguousarray(gt)
+    lq = torch.from_numpy(lq)[None, None].repeat(1, channels, 1, 1) # [1, C, H, W]
+    gt = torch.from_numpy(gt)[None, None].repeat(1, channels, 1, 1) # [1, C, H, W]
+    lq, gt = lq.cuda(), gt.cuda()
+    lq, gt = lq.int(), gt.int()
+    variance = 20 * 20
 
-Example of gray-scale denoising by the fisrt step of BM3D:
+    lq, gt = lq * scale, gt * scale
+    variance = variance * (scale ** 2)    
+
+    bm3d = BM3D(two_step=True)
+
+    pred = bm3d(lq, variance=variance)
+
+    mse = torch.mean((pred.float() / 255. / scale - gt.float() / 255. / scale) ** 2)
+    psnr = 10 * torch.log10(1 / mse)
+    
+    print("PSNR: {:.2f}".format(psnr.item()))
 ```
-./bm3d lena_20.png lena_den.png 20
-```
-Example of color denoising by both steps of BM3D:
-```
-./bm3d lena_20_color.png lena_den_color.png 20 color twostep
-```
-Example of grayscale denoising by both steps of BM3D with PSNR computation:
-```
-./bm3d lena_25.png lena_den.png 25 nocolor twostep quiet lena.png
-``` 
-# Citation
+
+# Thanks
+Most of the code is based on the implementation of David Honzátko <david.honzatko@epfl.ch> in [bm3d-gpu](https://github.com/DawyD/bm3d-gpu)
+
 If you find this implementation useful please cite the following paper in your work:
 
     @article{bm3d-gpu,
