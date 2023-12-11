@@ -1,0 +1,7 @@
+*.so
+*.egg-info
+*.o
+*.ninja*
+*.egg
+.vscode
+*.pyc
