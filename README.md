@@ -1,7 +1,9 @@
 BM3D Pytorch Version
 ========
 
-🌟 We support RAW image denoising with multi-channel and int type! 🌟
+🌟 **Super Fast:** Achieve denoising in just 0.3 seconds, compared to 5 minutes (matlab) on 2K resolution! 🌟
+
+🌟 **RAW Image Denoising:** Now with multi-channel and integer type support! 🌟
 
 Has been tested in pytorch=1.10.1, python=3.8, CUDA=11.1
 
